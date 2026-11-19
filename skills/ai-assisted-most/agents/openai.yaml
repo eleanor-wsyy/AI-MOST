@@ -1,0 +1,5 @@
+name: ai-assisted-most
+interface:
+  display_name: "AI-assisted MOST"
+  short_description: "Compare image pairs with simulated intuition, population forecasts, and LS15 structure"
+  default_prompt: "Compare the supplied image pair using AI-assisted MOST. Run the requested wording and conditions, separate model simulation from human evidence, and report uncertainty."

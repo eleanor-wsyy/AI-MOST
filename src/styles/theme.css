@@ -1,0 +1,445 @@
+/* Living Structure — Claude Design System Theme */
+/* Warm cream canvas + coral accent + serif display */
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-size: 16px;
+
+  /* ═══ Canvas & Surface ═══ */
+  --background: #faf9f5;           /* Claude canvas — warm cream */
+  --foreground: #141413;           /* Claude ink — warm dark, never pure black */
+  --card: #efe9de;                 /* Claude surface-card — one step darker than canvas */
+  --card-foreground: #141413;
+  --popover: #faf9f5;
+  --popover-foreground: #141413;
+
+  /* ═══ Primary — Coral ═══ */
+  --primary: #cc785c;              /* Claude coral — signature warm accent */
+  --primary-foreground: #ffffff;   /* Claude on-primary */
+  --primary-hover: #a9583e;        /* Claude primary-active */
+
+  /* ═══ Secondary & Muted ═══ */
+  --secondary: #f5f0e8;            /* Claude surface-soft */
+  --secondary-foreground: #141413;
+  --muted: #f5f0e8;
+  --muted-foreground: #6c6a64;     /* Claude muted */
+  --accent: #f5f0e8;
+  --accent-foreground: #141413;
+
+  /* ═══ Semantic ═══ */
+  --destructive: #c64545;          /* Claude error */
+  --destructive-foreground: #ffffff;
+  --success: #5db872;              /* Claude success */
+  --warning: #d4a017;              /* Claude warning */
+
+  /* ═══ Borders ═══ */
+  --border: #e6dfd8;               /* Claude hairline */
+  --border-soft: #ebe6df;          /* Claude hairline-soft */
+  --border-strong: #d4cfc4;        /* Darker border for inputs/active states */
+  --input: transparent;
+  --input-background: #efe9de;
+  --switch-background: #d4cfc4;
+
+  /* ═══ Typography Weights ═══ */
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  /* ═══ Focus Ring ═══ */
+  --ring: #cc785c;
+
+  /* ═══ Charts ═══ */
+  --chart-1: #cc785c;              /* coral */
+  --chart-2: #5db8a6;              /* accent-teal */
+  --chart-3: #e8a55a;              /* accent-amber */
+  --chart-4: #5db872;              /* success */
+  --chart-5: #d4a017;              /* warning */
+
+  /* ═══ Radius Scale (Claude) ═══ */
+  --radius: 0.75rem;               /* 12px — Claude lg, standard card radius */
+  --radius-xs: 0.25rem;            /* 4px */
+  --radius-sm: 0.375rem;           /* 6px */
+  --radius-md: 0.5rem;             /* 8px — buttons, inputs */
+  --radius-lg: 0.75rem;            /* 12px — cards */
+  --radius-xl: 1rem;               /* 16px — large panels */
+  --radius-pill: 9999px;
+
+  /* ═══ Sidebar ═══ */
+  --sidebar: #f5f0e8;
+  --sidebar-foreground: #141413;
+  --sidebar-primary: #cc785c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #efe9de;
+  --sidebar-accent-foreground: #141413;
+  --sidebar-border: #e6dfd8;
+  --sidebar-ring: #cc785c;
+
+  /* ═══ Surface Strong ═══ */
+  --surface-strong: #e8e0d2;       /* Claude surface-cream-strong */
+  --surface-dark: #181715;         /* Claude surface-dark */
+  --surface-dark-elevated: #252320;
+  --on-dark: #faf9f5;              /* text on dark surfaces */
+  --on-dark-soft: #a09d96;         /* muted text on dark */
+
+  /* Liquid glass surfaces */
+  --glass-tint: rgba(255, 252, 246, 0.58);
+  --glass-tint-soft: rgba(255, 251, 244, 0.38);
+  --glass-edge: rgba(255, 255, 255, 0.72);
+  --glass-shadow: rgba(92, 54, 33, 0.16);
+  --glass-inner-shadow: rgba(129, 80, 50, 0.1);
+}
+
+/* ═══ Dark Mode ═══ */
+.dark {
+  --background: #181715;           /* Claude surface-dark */
+  --foreground: #faf9f5;           /* Claude on-dark */
+  --card: #1f1e1b;                 /* Claude surface-dark-soft */
+  --card-foreground: #faf9f5;
+  --popover: #252320;              /* Claude surface-dark-elevated */
+  --popover-foreground: #faf9f5;
+
+  --primary: #cc785c;              /* Coral stays in dark mode */
+  --primary-foreground: #ffffff;
+  --primary-hover: #d4896f;        /* lighter coral for dark hover */
+
+  --secondary: #252320;
+  --secondary-foreground: #faf9f5;
+  --muted: #252320;
+  --muted-foreground: #a09d96;     /* Claude on-dark-soft */
+  --accent: #252320;
+  --accent-foreground: #faf9f5;
+
+  --destructive: #c64545;
+  --destructive-foreground: #ffffff;
+  --success: #5db872;
+  --warning: #d4a017;
+
+  --border: #2a2825;
+  --border-soft: #22201d;
+  --border-strong: #3d3a35;
+  --input: transparent;
+  --input-background: #252320;
+  --switch-background: #3d3a35;
+
+  --ring: #cc785c;
+
+  --chart-1: #cc785c;
+  --chart-2: #5db8a6;
+  --chart-3: #e8a55a;
+  --chart-4: #5db872;
+  --chart-5: #d4a017;
+
+  --sidebar: #1f1e1b;
+  --sidebar-foreground: #faf9f5;
+  --sidebar-primary: #cc785c;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #252320;
+  --sidebar-accent-foreground: #faf9f5;
+  --sidebar-border: #2a2825;
+  --sidebar-ring: #cc785c;
+
+  --surface-strong: #3d3a35;
+  --surface-dark: #181715;
+  --surface-dark-elevated: #252320;
+  --on-dark: #faf9f5;
+  --on-dark-soft: #a09d96;
+
+  --glass-tint: rgba(42, 39, 35, 0.66);
+  --glass-tint-soft: rgba(38, 35, 32, 0.48);
+  --glass-edge: rgba(255, 255, 255, 0.14);
+  --glass-shadow: rgba(0, 0, 0, 0.32);
+  --glass-inner-shadow: rgba(255, 255, 255, 0.06);
+}
+
+/* ═══ Tailwind v4 Theme Mapping ═══ */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  /* Radius */
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-pill: var(--radius-pill);
+
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Font families */
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-code: var(--font-code);
+}
+
+/* ═══ Base Layer ═══ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-body);
+  }
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  /* Display headings use serif */
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-weight: var(--font-weight-normal);
+  }
+
+  h1 {
+    font-size: var(--text-display-lg);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  h2 {
+    font-size: var(--text-display-md);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+
+  h3 {
+    font-size: var(--text-display-sm);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+  }
+
+  h4 {
+    font-size: var(--text-title-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.3;
+  }
+
+  label {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-body-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.0;
+    border-radius: var(--radius-md);
+  }
+
+  input {
+    font-size: var(--text-body-md);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+
+  p {
+    color: #3d3d3a;               /* Claude body */
+    line-height: 1.55;            /* Claude body reading comfort */
+  }
+
+  a {
+    color: var(--primary);
+  }
+}
+
+@media (max-width: 767px) {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    overscroll-behavior-y: contain;
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  a {
+    touch-action: manipulation;
+  }
+
+  img,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
+}
+
+/* Liquid glass: layered tint, refraction edge, saturation, and warm directional shadow. */
+.liquid-glass {
+  border: 1px solid var(--glass-edge);
+  background-color: var(--glass-tint);
+  background-image:
+    radial-gradient(circle at 12% 4%, rgba(255, 255, 255, 0.82), transparent 34%),
+    radial-gradient(circle at 92% 110%, rgba(204, 120, 92, 0.14), transparent 42%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.26), rgba(255, 248, 238, 0.04));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.8),
+    inset 0 -1px 0 var(--glass-inner-shadow),
+    0 16px 40px var(--glass-shadow);
+  -webkit-backdrop-filter: blur(26px) saturate(155%);
+  backdrop-filter: blur(26px) saturate(155%);
+}
+
+.liquid-glass--soft {
+  background-color: var(--glass-tint-soft);
+  background-image:
+    radial-gradient(circle at 8% 0%, rgba(255, 255, 255, 0.6), transparent 38%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.18), rgba(255, 248, 238, 0.02));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 10px 26px rgba(92, 54, 33, 0.1);
+}
+
+.liquid-glass--sidebar {
+  border-width: 0 1px 0 0;
+  border-radius: 0;
+  background-color: rgba(248, 242, 232, 0.68);
+  background-image:
+    radial-gradient(circle at 5% 2%, rgba(255, 255, 255, 0.9), transparent 30%),
+    radial-gradient(circle at 110% 72%, rgba(204, 120, 92, 0.18), transparent 36%),
+    linear-gradient(180deg, rgba(255, 252, 247, 0.42), rgba(239, 226, 210, 0.3));
+  box-shadow:
+    inset -1px 0 0 rgba(255, 255, 255, 0.5),
+    18px 0 48px rgba(82, 43, 22, 0.12);
+  -webkit-backdrop-filter: blur(32px) saturate(150%);
+  backdrop-filter: blur(32px) saturate(150%);
+}
+
+.liquid-glass--toolbar {
+  border-width: 0 0 1px;
+  border-radius: 0;
+  background-color: rgba(255, 252, 246, 0.58);
+  background-image:
+    linear-gradient(105deg, rgba(255, 255, 255, 0.58), rgba(255, 248, 238, 0.17) 62%, rgba(204, 120, 92, 0.08));
+  box-shadow:
+    inset 0 -1px 0 rgba(255, 255, 255, 0.52),
+    0 8px 28px rgba(92, 54, 33, 0.09);
+  -webkit-backdrop-filter: blur(22px) saturate(150%);
+  backdrop-filter: blur(22px) saturate(150%);
+}
+
+.liquid-glass--mobile-menu {
+  border-width: 0;
+  border-radius: 0;
+  background-color: rgba(248, 243, 235, 0.86);
+  background-image:
+    radial-gradient(circle at 100% 0%, rgba(204, 120, 92, 0.17), transparent 38%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.7), rgba(246, 237, 225, 0.46));
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(34px) saturate(145%);
+  backdrop-filter: blur(34px) saturate(145%);
+}
+
+.liquid-glass--interactive {
+  transform: translateZ(0);
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-color 220ms ease,
+    background-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.liquid-glass--interactive:hover:not(:disabled) {
+  transform: translateY(-1px) translateZ(0);
+  border-color: rgba(255, 255, 255, 0.92);
+  background-color: rgba(255, 253, 249, 0.7);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(129, 80, 50, 0.08),
+    0 18px 36px rgba(92, 54, 33, 0.16);
+}
+
+.liquid-glass--interactive:active:not(:disabled) {
+  transform: translateY(0) scale(0.985) translateZ(0);
+}
+
+.liquid-glass-input {
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.42);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.72),
+    inset 0 1px 7px rgba(102, 63, 39, 0.06);
+  -webkit-backdrop-filter: blur(14px) saturate(135%);
+  backdrop-filter: blur(14px) saturate(135%);
+}
+
+.liquid-glass-input::placeholder {
+  color: rgba(108, 106, 100, 0.72);
+}
+
+@supports not ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  .liquid-glass,
+  .liquid-glass--soft,
+  .liquid-glass--sidebar,
+  .liquid-glass--toolbar,
+  .liquid-glass--mobile-menu {
+    background-color: rgba(250, 247, 241, 0.96);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liquid-glass--interactive {
+    transition: none;
+  }
+}
