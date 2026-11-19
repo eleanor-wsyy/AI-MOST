@@ -84,6 +84,7 @@ export type PairMasterComparisonRow = {
   chapter: 2 | 8;
   imageA: string;
   imageB: string;
+  inputMode: 'single_image' | 'two_images';
   alexanderHigher: 'A';
   beautimeterLeft: number;
   beautimeterRight: number;
@@ -122,8 +123,9 @@ export function buildPairMasterComparisonRows(
     const pairId = pair.articlePairId || `${pair.propertyId}-${pair.pairNumber}`;
     const ref = BEAUTIMETER_BOOK_REFERENCES[pairId];
     const validTrials = trials.filter((t) => {
-      if (!pair.imageB || t.pair_id !== pairId || t.status !== 'valid') return false;
-      if (REVISED_MOST_BOOK_IMAGES.has(pairId) && (t.image_a !== pair.imageA || t.image_b !== pair.imageB)) return false;
+      if (t.pair_id !== pairId || t.status !== 'valid') return false;
+      if ((pair.sharedImageObjects || REVISED_MOST_BOOK_IMAGES.has(pairId)) && (t.image_a !== pair.imageA || t.image_b !== pair.imageB)) return false;
+      if (pair.sharedImageObjects && (!t.prompt_id?.endsWith('-single-image') || t.image_order_swapped)) return false;
       if (t.condition === 'ls15') return true;
       const w = t.wording_id || 'W1';
       return wordingFilter === 'ALL' || w === wordingFilter;
@@ -153,6 +155,7 @@ export function buildPairMasterComparisonRows(
       chapter: ref.chapter,
       imageA: pair.imageA,
       imageB: pair.imageB,
+      inputMode: pair.sharedImageObjects ? 'single_image' : 'two_images',
       alexanderHigher: ref.alexanderHigher,
       beautimeterLeft: ref.beautimeterLeft,
       beautimeterRight: ref.beautimeterRight,
@@ -210,6 +213,7 @@ export function exportPairMasterComparisonCsv(
     'sim30_b_count',
     'sim30_tie_count',
     'sim30_modal_choice',
+    'input_mode',
   ];
   const lines = [
     headers.join(','),
@@ -218,7 +222,7 @@ export function exportPairMasterComparisonCsv(
         r.pairId,
         r.figure,
         r.chapter,
-        r.imageB ? 'ready' : 'reference_only',
+        'ready',
         wordingFilter,
         r.alexanderHigher,
         r.beautimeterLeft,
@@ -241,6 +245,7 @@ export function exportPairMasterComparisonCsv(
         r.sim30BCount,
         r.sim30TieCount,
         r.sim30Choice ?? '',
+        r.inputMode,
       ].join(','),
     ),
   ];

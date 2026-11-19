@@ -149,7 +149,7 @@ export function MostAiWorkbench() {
               真实人类受试者问卷调查的一致性比例与众数选择（参考 2015 论文 392 份问卷的方法、Alexander 书中基准，以及后续收集的真实学生数据）。
             </p>
             <p className="mt-2 text-xs font-semibold text-stone-700">
-              书中基准：全部 46 对左图 (A) 生命度更高 · 原文 Beautimeter 一致率 41/46 (89.1%)
+              书中基准：全部 46 对的 A 生命度更高 · 原文 Beautimeter 一致率 41/46 (89.1%)
             </p>
           </div>
         </div>
@@ -220,8 +220,8 @@ export function MostAiWorkbench() {
             {([
               { id: 'random10', label: '随机 10 对快速批次' },
               { id: 'fig5_16', label: 'Figure 5 全部（A01–A16，16 对）' },
-              { id: 'fig6_30', label: 'Figure 6（29 对可运行）' },
-              { id: 'all46', label: '全部可运行样本（45 对）' },
+              { id: 'fig6_30', label: 'Figure 6（30 对）' },
+              { id: 'all46', label: '全部样本（46 对）' },
             ] as const).map((item) => (
               <button
                 key={item.id}
@@ -258,7 +258,7 @@ export function MostAiWorkbench() {
               <h2 className="font-serif text-lg font-semibold">三、46 对《The Nature of Order》样本四方法对照总表（可直接导出给教授讨论）</h2>
             </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              汇总全部 {ALL_MOST_BOOK_PAIRS.length} 对书中案例的 Alexander 原始方向（左图 A 更高）、已发表 Beautimeter 15 属性得分，以及当前实验的 LS15、模拟单人（SIM1/SIM30）、预测平均人（PRED）结果。
+              汇总全部 {ALL_MOST_BOOK_PAIRS.length} 对书中案例的 Alexander 原始方向（A 更高）、已发表 Beautimeter 15 属性得分，以及当前实验的 LS15、模拟单人（SIM1/SIM30）、预测平均人（PRED）结果。
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -339,14 +339,13 @@ export function MostAiWorkbench() {
                       })}
                     </div>
                   </td>
-                  <td className="px-3 py-2 font-semibold text-emerald-800">{row.alexanderHigher} (左图)</td>
+                  <td className="px-3 py-2 font-semibold text-emerald-800">{row.alexanderHigher} ({row.inputMode === 'single_image' ? '上方物品' : '左图'})</td>
                   <td className="px-3 py-2">
                     <span className="font-medium">{row.beautimeterLeft} vs {row.beautimeterRight}</span>{' '}
                     <span className={`ml-1 rounded px-1.5 py-0.5 text-[11px] font-semibold ${row.beautimeterHigher === 'A' ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-100 text-amber-900'}`}>
                       {row.beautimeterHigher}
                     </span>
                   </td>
-                  {!row.imageB ? <td colSpan={4} className="px-3 py-2 text-muted-foreground">仅供参考 · 原始材料没有两张独立图</td> : <>
                   <td className="px-3 py-2">
                     {row.ls15ScoreA !== null && row.ls15ScoreB !== null
                       ? `${row.ls15ScoreA.toFixed(1)} vs ${row.ls15ScoreB.toFixed(1)} (${row.ls15Choice})`
@@ -367,7 +366,6 @@ export function MostAiWorkbench() {
                       ? `A:${row.sim30ACount} B:${row.sim30BCount} T:${row.sim30TieCount} (${row.sim30Choice})`
                       : <span className="text-muted-foreground">待运行</span>}
                   </td>
-                  </>}
                 </tr>
               ))}
             </tbody>

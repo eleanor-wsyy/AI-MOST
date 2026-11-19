@@ -45,7 +45,7 @@ export async function callUserAI(settings: AiSettings, request: { prompt: string
   if (gemini) headers.set('x-goog-api-key', settings.key);
   else if (settings.key) headers.set('Authorization', `Bearer ${settings.key}`);
   const imageParts = request.images.flatMap<object>((image, index) => {
-    const label = `Image ${index === 0 ? 'A' : 'B'}:`;
+    const label = request.images.length === 1 ? 'Shared image (objects A and B):' : `Image ${index === 0 ? 'A' : 'B'}:`;
     return gemini
       ? [{ text: label }, { inlineData: { mimeType: image.mimeType, data: image.base64Data } }]
       : [{ type: 'text', text: label }, { type: 'image_url', image_url: { url: `data:${image.mimeType};base64,${image.base64Data}` } }];

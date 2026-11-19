@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Download, Loader2, Play, RefreshCcw, Sparkles } from 'lucide-react';
-import type { MostFacadePair } from '@/app/data/mostFacadeDataset';
+import type { MostBookPair } from '@/app/data/mostBookDataset';
 import { BEAUTIMETER_BOOK_REFERENCES, MOST_WORDINGS, type MostWordingId } from '@/app/data/mostBookDataset';
 import type { MostLocalAiTrial } from '@/app/lib/mostLocalTrials';
 import { useLanguage } from '@/app/i18n/LanguageContext';
@@ -32,7 +32,7 @@ export function MostAiRound({
   onDrawAgain,
   onTrialsUpdated,
 }: {
-  pairs: MostFacadePair[];
+  pairs: MostBookPair[];
   wordingId: MostWordingId;
   includeSim30: boolean;
   onSave: (trial: MostLocalAiTrial) => Promise<void> | void;
@@ -58,7 +58,7 @@ export function MostAiRound({
     onTrialsUpdated?.();
   };
 
-  const runSinglePair = async (pair: MostFacadePair, key: string) => {
+  const runSinglePair = async (pair: MostBookPair, key: string) => {
     if (running || runningPairId) return;
     setRunningPairId(key);
     setError('');
@@ -159,6 +159,7 @@ export function MostAiRound({
       const key = `${pairId}-${index}`;
       const pairResults = results[key] ?? [];
       const ref = BEAUTIMETER_BOOK_REFERENCES[pairId];
+      const objects = pair.sharedImageObjects?.[en ? 'en' : 'zh'];
       const expectedConditions = includeSim30 ? 4 : 3;
       const isThisPairRunning = runningPairId === key || (running && index === completedPairs);
       return <article key={key} className="rounded-xl border border-border bg-white p-3.5 shadow-xs">
@@ -196,7 +197,14 @@ export function MostAiRound({
             </span>
           </div>
         </div>
-        <div className="grid grid-cols-2 gap-2.5">{[pair.imageA, pair.imageB].map((src, side) => <div key={src}><div className="aspect-square overflow-hidden rounded-lg border border-border bg-stone-50"><img src={src} alt={`${pairId} ${side ? 'B' : 'A'}`} loading="lazy" className="h-full w-full object-contain" /></div><p className="mt-1 text-xs font-semibold">{en ? 'Image' : '图像'} {side ? 'B (Right)' : 'A (Left · Alexander Higher)'}</p></div>)}</div>
+        {objects ? <figure>
+          <div className="aspect-[822/528] overflow-hidden rounded-lg border border-border bg-stone-50">
+            <img src={pair.imageA} alt={`${pairId}: A · ${objects[0]}; B · ${objects[1]}`} loading="lazy" className="h-full w-full object-contain" />
+          </div>
+          <figcaption className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs font-semibold">
+            <span>A · {objects[0]}</span><span>B · {objects[1]}</span>
+          </figcaption>
+        </figure> : <div className="grid grid-cols-2 gap-2.5">{[pair.imageA, pair.imageB].map((src, side) => <div key={src}><div className="aspect-square overflow-hidden rounded-lg border border-border bg-stone-50"><img src={src} alt={`${pairId} ${side ? 'B' : 'A'}`} loading="lazy" className="h-full w-full object-contain" /></div><p className="mt-1 text-xs font-semibold">{en ? 'Image' : '图像'} {side ? 'B (Right)' : 'A (Left · Alexander Higher)'}</p></div>)}</div>}
         {pairResults.length > 0 && <div className="mt-3 space-y-1.5 border-t border-border pt-3">{pairResults.map(result => <div key={result.condition} className="flex items-baseline justify-between gap-2 text-xs"><span className="text-muted-foreground">{roleLabels[result.condition][en ? 'en' : 'zh']}</span><strong>{outputLabel(result, en)}</strong></div>)}</div>}
       </article>;
     })}</div>

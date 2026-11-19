@@ -1,6 +1,15 @@
 import type { MostFacadePair } from './mostFacadeDataset';
 
 const PAIR_ROOT = `${import.meta.env.BASE_URL}output/most-ai-study-2026-11-14/ppt_images`;
+export type MostBookPair = MostFacadePair & {
+  sharedImageObjects?: Record<'en' | 'zh', readonly [string, string]>;
+};
+
+const TOOL_OBJECTS = {
+  en: ['the hatchet at the top', 'the diagonal screwdriver below'],
+  zh: ['上方的斧头', '下方斜放的螺丝刀'],
+} as const;
+
 export const REVISED_MOST_BOOK_IMAGES = new Set([
   'A16', 'B01', 'B02', 'B06', 'B08', 'B09', 'B11', 'B12', 'B13', 'B14',
   'B18', 'B19', 'B20', 'B21', 'B22', 'B23', 'B24', 'B25', 'B26', 'B27', 'B28', 'B29', 'B30',
@@ -141,7 +150,7 @@ export const BEAUTIMETER_BOOK_REFERENCES: Record<string, BeautimeterBookReferenc
   B30: { pairId: 'B30', figure: 6, chapter: 8, alexanderHigher: 'A', beautimeterLeft: 8.7, beautimeterRight: 9.3, beautimeterHigher: 'B' },
 };
 
-function makePair(pairId: string): MostFacadePair {
+function makePair(pairId: string): MostBookPair {
   const figure = pairId.startsWith('A') ? 5 : 6;
   const pairNumber = Number(pairId.slice(1));
   const revision = REVISED_MOST_BOOK_IMAGES.has(pairId) ? '?v=ppt-audit-2' : '';
@@ -153,28 +162,27 @@ function makePair(pairId: string): MostFacadePair {
     pairNumber,
     imageA: pairId === 'B05' ? `${PAIR_ROOT}/B05_source.png` : `${PAIR_ROOT}/${pairId}_A.png${revision}`,
     imageB: pairId === 'B05' ? '' : `${PAIR_ROOT}/${pairId}_B.png${revision}`,
+    ...(pairId === 'B05' ? { sharedImageObjects: TOOL_OBJECTS } : {}),
     positivePromptSlot: 'A',
     articlePairId: pairId,
   };
 }
 
-export const ALL_MOST_BOOK_PAIRS: MostFacadePair[] = [
+export const ALL_MOST_BOOK_PAIRS: MostBookPair[] = [
   ...Array.from({ length: 16 }, (_, i) => makePair(`A${String(i + 1).padStart(2, '0')}`)),
   ...Array.from({ length: 30 }, (_, i) => makePair(`B${String(i + 1).padStart(2, '0')}`)),
 ];
 
 export type MostBookSubset = 'random10' | 'fig5_16' | 'fig6_30' | 'all46';
 
-const RUNNABLE_MOST_BOOK_PAIRS = ALL_MOST_BOOK_PAIRS.filter(pair => pair.imageB);
-
-export function getMostBookPairsBySubset(subset: MostBookSubset, seed: number): MostFacadePair[] {
-  if (subset === 'fig5_16') return RUNNABLE_MOST_BOOK_PAIRS.filter(p => p.articlePairId?.startsWith('A'));
-  if (subset === 'fig6_30') return RUNNABLE_MOST_BOOK_PAIRS.filter(p => p.articlePairId?.startsWith('B'));
-  if (subset === 'all46') return [...RUNNABLE_MOST_BOOK_PAIRS];
+export function getMostBookPairsBySubset(subset: MostBookSubset, seed: number): MostBookPair[] {
+  if (subset === 'fig5_16') return ALL_MOST_BOOK_PAIRS.filter(p => p.articlePairId?.startsWith('A'));
+  if (subset === 'fig6_30') return ALL_MOST_BOOK_PAIRS.filter(p => p.articlePairId?.startsWith('B'));
+  if (subset === 'all46') return [...ALL_MOST_BOOK_PAIRS];
   return prepareMostBookSession(seed, 10);
 }
 
-export function prepareMostBookSession(seed: number, count = 10): MostFacadePair[] {
+export function prepareMostBookSession(seed: number, count = 10): MostBookPair[] {
   let state = seed >>> 0;
   const random = () => {
     state += 0x6d2b79f5;
@@ -182,7 +190,7 @@ export function prepareMostBookSession(seed: number, count = 10): MostFacadePair
     value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
     return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
   };
-  const pairs = [...RUNNABLE_MOST_BOOK_PAIRS];
+  const pairs = [...ALL_MOST_BOOK_PAIRS];
   for (let i = pairs.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1));
     [pairs[i], pairs[j]] = [pairs[j], pairs[i]];

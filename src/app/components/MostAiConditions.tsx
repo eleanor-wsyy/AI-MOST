@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { Loader2, Sparkles } from 'lucide-react';
 import { AiRequestError, callUserAI, getAiSettings, type AiImagePayload } from '@/app/lib/aiClient';
 import type { MostChoice } from '@/app/lib/mostResponses';
-import type { MostFacadePair } from '@/app/data/mostFacadeDataset';
-import { MOST_WORDINGS, type MostWordingId } from '@/app/data/mostBookDataset';
+import { MOST_WORDINGS, type MostBookPair, type MostWordingId } from '@/app/data/mostBookDataset';
 import { properties as livingProperties } from '@/app/data/properties';
 import { useLanguage } from '@/app/i18n/LanguageContext';
 import type { MostLocalAiCondition, MostLocalAiTrial } from '@/app/lib/mostLocalTrials';
@@ -54,11 +53,12 @@ export function getWordingQuestion(wordingId: MostWordingId): string {
   return MOST_WORDINGS.find(w => w.id === wordingId)?.questionEn ?? MOST_WORDINGS[0].questionEn;
 }
 
-export function promptFor(condition: MostLocalAiCondition, language: 'en' | 'zh', wordingId: MostWordingId = 'W1') {
+export function promptFor(condition: MostLocalAiCondition, language: 'en' | 'zh', wordingId: MostWordingId = 'W1', objects?: readonly [string, string]) {
   const lang = language === 'zh' ? 'Simplified Chinese' : 'English';
   const questionText = getWordingQuestion(wordingId);
+  const target = objects ? 'object' : 'image';
   const role = condition === 'ls15'
-    ? 'Score each image separately using the 15 properties of living structure. Do not make a personal or population preference judgment.'
+    ? `Score each ${target} separately using the 15 properties of living structure. Do not make a personal or population preference judgment.`
     : condition === 'pred'
       ? `Predict the distribution of responses from 100 ordinary people answering (${wordingId}): "${questionText}" This is a population forecast (predicting the average human / whole humanity distribution), not your own preference.`
       : `Simulate one ordinary human participant answering (${wordingId}): "${questionText}" Give one spontaneous individual response (pretending to be a single participant).`;
@@ -68,7 +68,10 @@ export function promptFor(condition: MostLocalAiCondition, language: 'en' | 'zh'
       ? '{"scores_a": [15 numbers from 0 to 1], "scores_b": [15 numbers from 0 to 1]}'
       : '{"choice": "A" | "B" | "tie", "rationale": "one short sentence"}';
   const propertyDefinitions = livingProperties.map(property => `${property.n}. ${language === 'zh' ? property.tZh : property.tEn}: ${language === 'zh' ? property.quoteZh : property.quoteEn}`).join('\n');
-  return `You are running a controlled Mirror of the Self Test comparison. ${role}\nImage A and Image B are the supplied book-example images. Do not use any human participant's choice. Do not claim subjective experience, measured calibration, or certainty. ${condition === 'ls15' ? `For each image, score each property from 0 (not evident) to 1 (clearly evident), based only on visible evidence. The 15 equally weighted properties are:\n${propertyDefinitions}\nThe application sums the 15 scores and derives the choice.` : ''} Respond only as JSON in ${lang}: ${output}`;
+  const input = objects
+    ? `Compare the two objects in the single supplied book-example image: A is ${objects[0]}; B is ${objects[1]}.`
+    : 'Image A and Image B are the supplied book-example images.';
+  return `You are running a controlled Mirror of the Self Test comparison. ${role}\n${input} Do not use any human participant's choice. Do not claim subjective experience, measured calibration, or certainty. ${condition === 'ls15' ? `For each ${target}, score each property from 0 (not evident) to 1 (clearly evident), based only on visible evidence. The 15 equally weighted properties are:\n${propertyDefinitions}\nThe application sums the 15 scores and derives the choice.` : ''} Respond only as JSON in ${lang}: ${output}`;
 }
 
 function promptIdFor(condition: MostLocalAiCondition, wordingId: MostWordingId): string {
@@ -82,7 +85,7 @@ function modeOf(counts: { a: number; b: number; tie: number }): MostChoice | nul
 }
 
 export async function runMostAiPair(
-  pair: MostFacadePair,
+  pair: MostBookPair,
   language: 'en' | 'zh',
   runId: string,
   onSave: (trial: MostLocalAiTrial) => Promise<void> | void,
@@ -96,21 +99,22 @@ export async function runMostAiPair(
   const includeSim30 = options?.includeSim30 ?? true;
   const settings = getAiSettings();
   const { provider, model } = settings;
-  const sourceImages = await Promise.all([pair.imageA, pair.imageB].map(toPayload));
+  const objects = pair.sharedImageObjects?.en;
+  const sourceImages = await Promise.all((objects ? [pair.imageA] : [pair.imageA, pair.imageB]).map(toPayload));
   const next: ConditionResult[] = [];
   const order: MostLocalAiCondition[] = includeSim30
     ? ['ls15', 'sim1', 'pred', 'sim30']
     : ['ls15', 'sim1', 'pred'];
 
   for (const condition of order) {
-    const prompt = promptFor(condition, language, wordingId);
+    const prompt = promptFor(condition, language, wordingId, objects);
     const promptHash = await hashPrompt(prompt);
     const attempts = condition === 'sim30' ? SIM30_ATTEMPTS : 1;
     const totals = { a: 0, b: 0, tie: 0, valid: 0 };
     let latest: ConditionResult = { condition, wordingId, choice: null, predictedA: null, predictedB: null, predictedTie: null, scoresA: null, scoresB: null, scoreA: null, scoreB: null, attempted: 0, valid: 0, aCount: 0, bCount: 0, tieCount: 0 };
 
     for (let attempt = 1; attempt <= attempts; attempt++) {
-      const imageOrderSwapped = Math.random() < 0.5;
+      const imageOrderSwapped = !objects && Math.random() < 0.5;
       const images = imageOrderSwapped ? [sourceImages[1], sourceImages[0]] : sourceImages;
       const started = performance.now();
       let parsed = parseMostAiReply('', condition);
@@ -137,7 +141,7 @@ export async function runMostAiPair(
         figure: pair.propertyId === 5 ? 5 : 6, source: 'beautimeter-book',
         image_a: pair.imageA, image_b: pair.imageB, image_order_swapped: imageOrderSwapped,
         condition, wording_id: wordingId, attempt_number: condition === 'sim30' ? attempt : null,
-        prompt_id: promptIdFor(condition, wordingId), prompt_hash: promptHash,
+        prompt_id: `${promptIdFor(condition, wordingId)}${objects ? '-single-image' : ''}`, prompt_hash: promptHash,
         ai_choice: parsed.choice, predicted_a_count: parsed.predictedA, predicted_b_count: parsed.predictedB, predicted_tie_count: parsed.predictedTie,
         scores_a: parsed.scoresA, scores_b: parsed.scoresB, score_a_total: parsed.scoreA, score_b_total: parsed.scoreB,
         reply, provider, model, elapsed_ms: elapsed, status, error_code: errorCode,
@@ -162,7 +166,7 @@ export async function runMostAiPair(
   return next;
 }
 
-export function MostAiConditions({ pair, onSave, wordingId = 'W1' }: { pair: MostFacadePair; onSave: (trial: MostLocalAiTrial) => Promise<void> | void; wordingId?: MostWordingId }) {
+export function MostAiConditions({ pair, onSave, wordingId = 'W1' }: { pair: MostBookPair; onSave: (trial: MostLocalAiTrial) => Promise<void> | void; wordingId?: MostWordingId }) {
   const { language } = useLanguage();
   const en = language === 'en';
   const [running, setRunning] = useState(false);
