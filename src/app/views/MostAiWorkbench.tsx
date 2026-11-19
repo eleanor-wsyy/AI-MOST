@@ -220,8 +220,8 @@ export function MostAiWorkbench() {
             {([
               { id: 'random10', label: '随机 10 对快速批次' },
               { id: 'fig5_16', label: 'Figure 5 全部（A01–A16，16 对）' },
-              { id: 'fig6_30', label: 'Figure 6 全部（B01–B30，30 对）' },
-              { id: 'all46', label: '全部 46 对完整样本（A01–B30）' },
+              { id: 'fig6_30', label: 'Figure 6（29 对可运行）' },
+              { id: 'all46', label: '全部可运行样本（45 对）' },
             ] as const).map((item) => (
               <button
                 key={item.id}
@@ -329,8 +329,14 @@ export function MostAiWorkbench() {
                   <td className="px-3 py-2 text-muted-foreground">Fig. {row.figure} (Ch. {row.chapter})</td>
                   <td className="px-3 py-2">
                     <div className="flex items-center gap-1.5">
-                      <img src={row.imageA} alt={`${row.pairId} A`} loading="lazy" className="h-9 w-9 rounded border border-border bg-stone-50 object-contain" />
-                      <img src={row.imageB} alt={`${row.pairId} B`} loading="lazy" className="h-9 w-9 rounded border border-border bg-stone-50 object-contain" />
+                      {(row.imageB ? [row.imageA, row.imageB] : [row.imageA]).map((src, index) => {
+                        const label = row.imageB ? `${row.pairId} ${index === 0 ? 'A' : 'B'}` : `${row.pairId} 完整原图`;
+                        return (
+                          <a key={src} href={src} target="_blank" rel="noreferrer" title={label}>
+                            <img src={src} alt={label} loading="lazy" className={`h-9 rounded border border-border bg-stone-50 object-contain ${row.imageB ? 'w-9' : 'w-20'}`} />
+                          </a>
+                        );
+                      })}
                     </div>
                   </td>
                   <td className="px-3 py-2 font-semibold text-emerald-800">{row.alexanderHigher} (左图)</td>
@@ -340,6 +346,7 @@ export function MostAiWorkbench() {
                       {row.beautimeterHigher}
                     </span>
                   </td>
+                  {!row.imageB ? <td colSpan={4} className="px-3 py-2 text-muted-foreground">仅供参考 · 原始材料没有两张独立图</td> : <>
                   <td className="px-3 py-2">
                     {row.ls15ScoreA !== null && row.ls15ScoreB !== null
                       ? `${row.ls15ScoreA.toFixed(1)} vs ${row.ls15ScoreB.toFixed(1)} (${row.ls15Choice})`
@@ -360,6 +367,7 @@ export function MostAiWorkbench() {
                       ? `A:${row.sim30ACount} B:${row.sim30BCount} T:${row.sim30TieCount} (${row.sim30Choice})`
                       : <span className="text-muted-foreground">待运行</span>}
                   </td>
+                  </>}
                 </tr>
               ))}
             </tbody>

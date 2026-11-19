@@ -1,6 +1,10 @@
 import type { MostFacadePair } from './mostFacadeDataset';
 
 const PAIR_ROOT = `${import.meta.env.BASE_URL}output/most-ai-study-2026-11-14/ppt_images`;
+export const REVISED_MOST_BOOK_IMAGES = new Set([
+  'A16', 'B01', 'B02', 'B06', 'B08', 'B09', 'B11', 'B12', 'B13', 'B14',
+  'B18', 'B19', 'B20', 'B21', 'B22', 'B23', 'B24', 'B25', 'B26', 'B27', 'B28', 'B29', 'B30',
+]);
 
 export type MostWordingId = 'W1' | 'W2' | 'W3' | 'W4' | 'W5' | 'W6';
 
@@ -140,14 +144,15 @@ export const BEAUTIMETER_BOOK_REFERENCES: Record<string, BeautimeterBookReferenc
 function makePair(pairId: string): MostFacadePair {
   const figure = pairId.startsWith('A') ? 5 : 6;
   const pairNumber = Number(pairId.slice(1));
+  const revision = REVISED_MOST_BOOK_IMAGES.has(pairId) ? '?v=ppt-audit-2' : '';
   return {
     source: 'beautimeter-book',
     propertyId: figure,
     propertyEn: figure === 5 ? 'Nature of Order · Fig. 5 (Ch. 2)' : 'Nature of Order · Fig. 6 (Ch. 8)',
     propertyZh: figure === 5 ? '《秩序的本质》图 5（第 2 章）' : '《秩序的本质》图 6（第 8 章）',
     pairNumber,
-    imageA: `${PAIR_ROOT}/${pairId}_A.png`,
-    imageB: `${PAIR_ROOT}/${pairId}_B.png`,
+    imageA: pairId === 'B05' ? `${PAIR_ROOT}/B05_source.png` : `${PAIR_ROOT}/${pairId}_A.png${revision}`,
+    imageB: pairId === 'B05' ? '' : `${PAIR_ROOT}/${pairId}_B.png${revision}`,
     positivePromptSlot: 'A',
     articlePairId: pairId,
   };
@@ -160,10 +165,12 @@ export const ALL_MOST_BOOK_PAIRS: MostFacadePair[] = [
 
 export type MostBookSubset = 'random10' | 'fig5_16' | 'fig6_30' | 'all46';
 
+const RUNNABLE_MOST_BOOK_PAIRS = ALL_MOST_BOOK_PAIRS.filter(pair => pair.imageB);
+
 export function getMostBookPairsBySubset(subset: MostBookSubset, seed: number): MostFacadePair[] {
-  if (subset === 'fig5_16') return ALL_MOST_BOOK_PAIRS.filter(p => p.articlePairId?.startsWith('A'));
-  if (subset === 'fig6_30') return ALL_MOST_BOOK_PAIRS.filter(p => p.articlePairId?.startsWith('B'));
-  if (subset === 'all46') return [...ALL_MOST_BOOK_PAIRS];
+  if (subset === 'fig5_16') return RUNNABLE_MOST_BOOK_PAIRS.filter(p => p.articlePairId?.startsWith('A'));
+  if (subset === 'fig6_30') return RUNNABLE_MOST_BOOK_PAIRS.filter(p => p.articlePairId?.startsWith('B'));
+  if (subset === 'all46') return [...RUNNABLE_MOST_BOOK_PAIRS];
   return prepareMostBookSession(seed, 10);
 }
 
@@ -175,10 +182,10 @@ export function prepareMostBookSession(seed: number, count = 10): MostFacadePair
     value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
     return ((value ^ (value >>> 14)) >>> 0) / 4294967296;
   };
-  const pairs = [...ALL_MOST_BOOK_PAIRS];
+  const pairs = [...RUNNABLE_MOST_BOOK_PAIRS];
   for (let i = pairs.length - 1; i > 0; i--) {
     const j = Math.floor(random() * (i + 1));
     [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
   }
-  return pairs.slice(0, Math.max(0, Math.min(ALL_MOST_BOOK_PAIRS.length, Math.floor(count))));
+  return pairs.slice(0, Math.max(0, Math.min(pairs.length, Math.floor(count))));
 }

@@ -2,6 +2,7 @@ import type { MostChoice } from './mostResponses';
 import {
   ALL_MOST_BOOK_PAIRS,
   BEAUTIMETER_BOOK_REFERENCES,
+  REVISED_MOST_BOOK_IMAGES,
   type MostWordingId,
 } from '@/app/data/mostBookDataset';
 
@@ -121,7 +122,8 @@ export function buildPairMasterComparisonRows(
     const pairId = pair.articlePairId || `${pair.propertyId}-${pair.pairNumber}`;
     const ref = BEAUTIMETER_BOOK_REFERENCES[pairId];
     const validTrials = trials.filter((t) => {
-      if (t.pair_id !== pairId || t.status !== 'valid') return false;
+      if (!pair.imageB || t.pair_id !== pairId || t.status !== 'valid') return false;
+      if (REVISED_MOST_BOOK_IMAGES.has(pairId) && (t.image_a !== pair.imageA || t.image_b !== pair.imageB)) return false;
       if (t.condition === 'ls15') return true;
       const w = t.wording_id || 'W1';
       return wordingFilter === 'ALL' || w === wordingFilter;
@@ -185,6 +187,7 @@ export function exportPairMasterComparisonCsv(
     'pair_id',
     'figure',
     'chapter',
+    'input_status',
     'wording_filter',
     'alexander_higher',
     'published_beautimeter_left',
@@ -215,6 +218,7 @@ export function exportPairMasterComparisonCsv(
         r.pairId,
         r.figure,
         r.chapter,
+        r.imageB ? 'ready' : 'reference_only',
         wordingFilter,
         r.alexanderHigher,
         r.beautimeterLeft,
