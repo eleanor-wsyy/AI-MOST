@@ -1,8 +1,14 @@
 # AI-assisted MOST
 
-A standalone research workbench and GPT skill for running the Mirror of the Self Test (MOST). Based on the Living Structure Studio workbench. The tool opens in a browser and needs neither the Studio repository nor Supabase.
+A Codex skill and standalone research workbench for the Mirror of the Self Test (MOST), based on the Living Structure Studio workbench. Neither workflow needs the Studio repository or Supabase.
 
-## Open the workbench
+## Run inside Codex without an API key
+
+Open this checkout as a Codex workspace and start a conversation with `$ai-assisted-most`. Attach two images, attach one image showing both objects, or specify a bundled case such as B05. For example: `Use $ai-assisted-most on B05 with W1 and show me the visual result.`
+
+Codex inspects the images and performs the requested passes in the current session. With Node.js 22+ available it writes an offline HTML report showing the original inputs, wording, judgment and rationale for each pass, the forecast distribution, and expandable LS15 scores. Open the HTML file from the chat result. No API key, web server or package installation is required for this workflow. The project skill lives in [`.agents/skills/ai-assisted-most/`](.agents/skills/ai-assisted-most/SKILL.md).
+
+## Open the standalone API workbench
 
 Use Node.js 22 or newer. In a local checkout:
 
@@ -23,4 +29,4 @@ The API key is held in the open tab's memory. The browser sends the wording and 
 - The 46 research pairs are the same as the original workbench: A01–A16 from Beautimeter Figure 5, B01–B30 from Figure 6, using cases from Christopher Alexander's *The Nature of Order*. Alexander's choices and published Beautimeter scores are reference columns; they are not recorded human survey responses. No participant records or Gemini experiment exports are bundled.
 - [Image provenance](docs/most-image-provenance.csv) records each input's source on slide 2 of `GPT4MOSTFigures&Data2.pptx`, pixel bounds, and checksum. B05 uses one original scan: A is the hatchet at the top and B is the diagonal screwdriver below. Its object labels stay fixed and the trial records have a `-single-image` prompt ID suffix. Earlier trials for revised images remain in the raw JSON export and are excluded from comparisons with the current inputs.
 
-The portable skill and its research protocol are in `skills/ai-assisted-most/`. The included figures are research reference material; credit remains with the original works and rights holders.
+The included figures are research reference material; credit remains with the original works and rights holders.
