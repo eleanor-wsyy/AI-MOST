@@ -1,4 +1,0 @@
-interface:
-  display_name: "AI-assisted MOST"
-  short_description: "Run and visualize an image comparison in Codex"
-  default_prompt: "Use $ai-assisted-most to compare these images in Codex and show me a visual report."

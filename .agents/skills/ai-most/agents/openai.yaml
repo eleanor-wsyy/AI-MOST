@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI MOST"
+  short_description: "Compare images with MOST and return results in chat"
+  default_prompt: "Use $ai-most to compare these images and give me only the results."

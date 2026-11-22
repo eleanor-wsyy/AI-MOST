@@ -1,12 +1,16 @@
-# AI-assisted MOST
+# AI MOST
 
-A Codex skill and standalone research workbench for the Mirror of the Self Test (MOST), based on the Living Structure Studio workbench. Neither workflow needs the Studio repository or Supabase.
+AI MOST 是一个在 Codex 中比较两张图片的「自我之镜测试」（Mirror of the Self Test）技能。结果直接显示在对话里，不生成报告。
 
-## Run inside Codex without an API key
+## 下载和使用（Codex）
 
-Open this checkout as a Codex workspace and start a conversation with `$ai-assisted-most`. Attach two images, attach one image showing both objects, or specify a bundled case such as B05. For example: `Use $ai-assisted-most on B05 with W1 and show me the visual result.`
+1. [下载 ZIP](https://github.com/eleanor-wsyy/ai-assisted-most/archive/refs/heads/main.zip) 并解压；已有旧版的用户也可以重新下载，或在克隆的仓库中执行 `git pull`。
+2. 在 Codex 中打开解压后含有本 README 的文件夹，新建对话。使用这个技能不需要另外填写 API Key，也不需要安装 Node.js。
+3. 上传两张图片，输入：`$ai-most 比较这两张图。第一张是 A，第二张是 B。` 默认返回模拟个人的选择、预测人群的 A/B/平局比例，以及两张图的活力结构总分。
 
-Codex inspects the images and performs the requested passes in the current session. With Node.js 22+ available it writes an offline HTML report showing the original inputs, wording, judgment and rationale for each pass, the forecast distribution, and expandable LS15 scores. Open the HTML file from the chat result. No API key, web server or package installation is required for this workflow. The project skill lives in [`.agents/skills/ai-assisted-most/`](.agents/skills/ai-assisted-most/SKILL.md).
+**不准备图片也能试：**复制 `$ai-most 用 W1 测试内置案例 B05，只返回模拟个人的选择。`
+
+**English:** Download and unzip the repository, open the folder containing this README in Codex, and start a new chat. Attach two images and type `$ai-most Compare these images. The first is A, the second is B.` Results appear in chat. See the [skill instructions](.agents/skills/ai-most/SKILL.md).
 
 ## Open the standalone API workbench
 
